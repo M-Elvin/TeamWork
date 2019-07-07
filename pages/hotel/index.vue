@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 导航栏 -->
     <div>
-      <!-- <Carousel /> -->
+      <Carousel />
     </div>
 
     <!-- :start="_start" :limit="_limit" -->
