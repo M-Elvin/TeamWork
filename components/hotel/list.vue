@@ -12,7 +12,7 @@
               <el-tabs :tab-position="tabPosition"  class="hotel-form">
                 <el-tab-pane label="酒店等级">
                   <div>
-                    <i class="el-icon-star-off" show-text
+                    <i class="el-icon-star-off" show-text="true"
                    ></i> 酒店等级
                   </div>
                   <div>
