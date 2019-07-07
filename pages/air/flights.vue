@@ -100,7 +100,6 @@ export default {
         // 页数切换时候触发
         handleCurrentChange(value){
             this.pageIndex = value;
-
             this.setDataList();
         },
 
