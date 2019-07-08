@@ -2,30 +2,39 @@
   <div class="container">
     <!-- 精准搜索栏 -->
     <el-form ref="form" :model="form" label-width="80px">
-      <div style="display: flex; margin-top: 20px; height: 100px;">
+      <div style="display: flex; ">
         <transition name="el-fade-in-linear">
-          <div v-show="show" class="transition-box">
-            <div class="tab">
+          <div v-if="show" class="transition-box">
+            <div class="tab" @click="handleClear">
               <i class="el-icon-search"></i> 精准搜索
             </div>
             <div>
               <el-tabs :tab-position="tabPosition"  class="hotel-form">
                 <el-tab-pane label="酒店等级">
-                  <div>
-                    <i class="el-icon-star-off" show-text="true"
-                   ></i> 酒店等级
+                  <div class="block">
+                        <i class="el-icon-star-on"></i>
+                       酒店等级
                   </div>
                   <div>
-                    <el-rate v-model="level" show-score
-                    
-                    ></el-rate>
+                    <el-form-item class="hotel-nav-select">
+                      <el-select v-model="form.hotellevel" size="mini" placeholder="请选择" @change="handleHotelleve">
+                        <el-option
+                          v-for="item in oplevels"
+                          :key="item.id"
+                          :label="item.level"
+                          :value="item.id"
+                          
+                        > {{item.name}}级酒店</el-option>
+                       
+                      </el-select>
+                        </el-form-item>                       
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="住宿类型">
                   <i class="el-icon-copy-document"></i> 住宿类型
                   <div>
                     <el-form-item >
-                        <el-checkbox-group v-model="form.type" class="form-type">
+                        <el-checkbox-group :min="0" :max="1" v-model="form.hoteltype" class="form-type" @change="handleHotelType">
                               <el-row class="form-type-list">
                                   <el-checkbox  name="type"
                                   v-for="(item,index) in optype"
@@ -37,10 +46,11 @@
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="酒店设施">
-                  <i class="el-icon-s-cooperation"></i> 酒店设施
+                  <i class="el-icon-s-cooperation"></i> 房间设施
                   <div>
                     <el-form-item >
-                        <el-checkbox-group v-model="form.assets" class="form-assets">
+                        <el-checkbox-group :min="0" :max="1"
+                        v-model="form.hotelasset" class="form-assets" @change="handleHotelAssets">
                               <el-row class="form-assets-list">
                                   <el-checkbox  name="type"
                                   v-for="(item,index) in opassets"
@@ -53,8 +63,10 @@
                 </el-tab-pane>
                 <el-tab-pane label="酒店品牌">
                   <i class="el-icon-school"></i> 酒店品牌
-                  <div class="hotel-nav-select">
-                    <el-select v-model="form.brand" size="mini" placeholder="请选择">
+                  <div >
+                    <el-form-item class="hotel-nav-select">
+
+                    <el-select v-model="form.hotelbrand" size="mini" placeholder="请选择" @change="handleHotelBrand">
                       <el-option
                         v-for="item in opbrand"
                         :key="item.id"
@@ -62,6 +74,8 @@
                         :value="item.id"
                       ></el-option>
                     </el-select>
+                      </el-form-item>
+                    
                   </div>
                 </el-tab-pane>
               </el-tabs>
@@ -69,13 +83,11 @@
           </div>
         </transition>
       </div>
-</el-form>
+    </el-form>
     <!-- 酒店信息 -->
-    <!-- <div class="block"
-               v-for="fit in fits"
-    :key="fit">-->
-    <div class="banner">      <i class="el-icon-s-promotion search
-        " @click="show = !show"></i>精选推广 </div>
+ 
+    <div class="banner"><i class="el-icon-s-promotion search
+        " @click="show = !show"></i>精选推广</div>
     <div class="hotel-item">
       <div v-for="(item,index) in dataList" :key="index">
         <div class="block">
@@ -116,6 +128,7 @@ export default {
   },
   data() {
     return {
+      arr:[],
       brand:"",
       level:1,
       hotel_type: [],
@@ -133,62 +146,153 @@ export default {
       //   redress:"高淳县淳溪镇镇兴路118号(高淳县委党校对面)",
       //   friendlink:'https://hotels.ctrip.com/hotel/694679.html'
       //   }]
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        }
-      ],
-      value: "",
       dataList: [],
       optype:[],
       opbrand:[],
       opassets:[],
       oplevels:[],
-
       //表单
         form: {
-          type: [],
-          assets:[],
-          brand:[],
-          levels:[],
-        }
+          hoteltype: [],
+          hotelasset:[],
+          hotelbrand:[],
+          hotellevel:0,
+        },
     };
   },
   methods: {
+    handleClear(){
+      this.form= {
+          hoteltype: {},
+          hotelasset:[],
+          hotelbrand:[],
+          hotellevel:0,
+        }
+    },
+    handleHotelleve(value){
+      // console.log(value);
+      this.form.hotellevel=value
+      // this.arr.hotellevel=value
+      // console.log(this.arr);
+      // hotellevel
+      this.$router.push({
+      path:"/hotel",
+      query:{
+        ...this.$route.query,
+        hotellevel:value
+      }
+    })
+      // this.$emit("setDataList",this.arr)
+    },
+    handleHotelType(value){
+      this.form.hoteltype=value
+      // console.log(value);
+      // const arr=this.form.hoteltype
+      // console.log(this.form.hoteltype[0]);
+      if(value.length==0)
+      {
+        return;
+      }
+      // console.log(typeof(value));
+     
+        this.arr.hoteltype=this.optype.filter(v=>{
+        if(v.name==value[0])
+        {
+          return v;
+        }
+      })
+      // console.log(this.arr.hoteltype[0].id);
+          this.$router.push({
+          path:"/hotel",
+          query:{
+            ...this.$route.query,
+            hoteltype:this.arr.hoteltype[0].id
+          }
+        })
+      // console.log(this.arr.hoteltype[0].name,this.arr.hoteltype[0].id);
+      
+      // if(this.arr.hoteltype[0])
+      // {
+      //   this.arr.hoteltype=this.arr.hoteltype[0].id
+      //   // console.log(this.arr.hoteltype);
+      //   this.$emit("setDataList",this.arr)
+      //   // console.log(this.arr.hoteltype[0].id);
+      // }
+    },
+    handleHotelAssets(value){
+      if(value.length==0)
+      {
+        return;
+      }
+      console.log(value);
+       this.form.hotelasset=value
+      //  console.log(this.form.hotelasset);
+       this.arr.hotelasset=this.opassets.filter(v=>{
+         if(v.name==value)
+         {
+           return v
+         }
+       })
+
+          this.$router.push({
+          path:"/hotel",
+          query:{
+            ...this.$route.query,
+            hotelasset:this.arr.hotelasset[0].id
+          }
+        })
+       console.log(this.arr.hotelasset[0].id);
+      //  if(this.arr.hotelasset[0])
+      //  {
+      //    this.arr.hotelasset=this.arr.hotelasset[0].id
+      //    this.$emit("setDataList",this.arr)
+      //  }
+      // console.log(value);
+    },
+    handleHotelBrand(value){
+      console.log(value);
+      this.arr.hotelbrand=value
+      // this.$emit("setDataList",this.arr)
+  
+        this.$router.push({
+          path:"/hotel",
+          query:{
+            ...this.$route.query,
+          hotelbrand:value
+          }
+        })
+    },
+
     handleGetoption(){
-         this.optype=this.hoteloption.data.types
+      console.log(this.hoteloption.data);
+        this.optype=this.hoteloption.data.types
         this.opbrand=this.hoteloption.data.brands
         this.opassets=this.hoteloption.data.assets
         this.oplevels=this.hoteloption.data.levels
-        console.log(this.hoteloption);
-        console.log(this.oplevels);
+        // console.log(this.opbrand);
+        // console.log(this.opassets);
+        // console.log(this.optype);
+        // console.log(this.hoteloption);
+        // console.log(this.opbrand);
     },
     handleGetdata() {
-      // console.log(this.data);
-
         this.dataList = this.data;
-   
-      // console.log(this.dataList,123);
     },
-      onSubmit() {
-        console.log('submit!');
-      }
+
   },
   watch: {
     data() {
       this.handleGetdata();
-    }
+    },
+    // form(){
+    //   this.show=!this.show;
+    // }
   },
   mounted() {
     setTimeout(() => {
     this.handleGetoption()
     this.handleGetdata();
-    }, 1000);
+    }, 3300);
   }
 };
 </script>
@@ -407,6 +511,7 @@ export default {
   }
   .hotel-nav-select {
     margin: 20px 0;
+    margin-right: 70px;
     span {
       display: block;
       margin-bottom: 6px;

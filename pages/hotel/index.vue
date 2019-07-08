@@ -2,21 +2,25 @@
   <div class="container">
     <!-- 导航栏 -->
     <div>
-      <!-- <Carousel /> -->
+      <Carousel :data="dataList" 
+       :hoteloption="hoteloption" 
+       @setDataList="setDataList"
+       />
     </div>
 
-    <!-- :start="_start" :limit="_limit" -->
     <!-- 筛选栏+展示栏 -->
     <div>
-       
-      <List :data="dataList" :hoteloption="hoteloption" class="list"/>
+      <List :data="dataList" 
+      :hoteloption="hoteloption"
+       class="list"
+       @setDataList="setDataList"
+       />
     </div>
 
     <!-- 页尾 -->
     <div class="foot">
       <div>
         <el-pagination
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageIndex"
           :page-size="pageSize"
@@ -36,9 +40,8 @@ import SearchForm from "@/components/hotel/searchForm.vue"
 export default {
   data() {
     return {
-      //  currentPage3: 5,
       pageIndex: 1,
-      pageSize: 6,
+      pageSize: 10,
       total: 0,
       dataList: [],
       hotelData: {},
@@ -46,7 +49,10 @@ export default {
       total: 0,
       hoteloption:{},
       _start: "",
-      _limit: ""
+      _limit: "",
+      formpageIndex:0,
+      star:{hotellevel:0},
+      cityid:{city:0}
     };
   },
   components: { Carousel, List },
@@ -54,20 +60,37 @@ export default {
     handleShow(){
         this.show=!this.show
     },
-    handleSizeChange(val) {
-    //   console.log(`每页 ${val} 条`);
-      this.pageSize = val;
-    },
     handleCurrentChange(val) {
     //   console.log(`当前页: ${val}`);
       this.pageIndex = val;
-      this.setDataList();
+      if(this.$route.query)
+      {
+        this.setDataList()
+      }else{    
+          this.getData()     
+      }
     },
+    // handleStart(){
+    //   if(arr)
+    //   {
+    //     this.setDataList(star)
+    //   }
+    // },
+
     setDataList() {
-        this.dataList=this.hotelData.data.slice(
-            this._start,this._limit*this.pageIndex-1
-        )
-        // console.log(this.dataList);
+      console.log(this.$route.query)
+        this.$axios({
+        url:"/hotels",
+        params:{
+          _limit: this.pageSize,
+          _start: (this.pageIndex - 1) * this.pageSize,
+          ...this.$route.query
+        }
+      }).then(res=>{
+        this.hotelData = res.data;
+        this.dataList=this.hotelData.data
+        this.total=res.data.total;
+      })
     },
     getData() {
       this.$axios({
@@ -80,11 +103,10 @@ export default {
         // console.log(res.data);
         this.hotelData = res.data;
         this._start = this.pageSize;
-        // console.log(this._start);
         // console.log(this.hotelData);
         this.dataList=this.hotelData.data
           this.total=res.data.total;
-        //   console.log(this.dataList);
+          // console.log(this.dataList);
       });
     },
     getoption(){
@@ -93,17 +115,40 @@ export default {
         }).then(res=>{
             // console.log(res);
             this.hoteloption=res.data
+            // console.log(this.hoteloption);
         })
-    }
+    },
+    getCity(){
+        this.$axios({
+          url:"cities",
+          params:{
+            name:""
+          }
+          }).then(res=>{
+            // console.log(res);
+        })
+    } 
   },
   watch: {
     pageIndex() {
-      this.getData();
+          if(!(this.$route.query))
+          {
+            this.getData();
+          }
+    },
+    $route(){
+      this.setDataList()
+    },
+    formpageIndex(){
+      this.pageIndex=1;
     }
+      
+  
   },
   mounted() {
     this.getData();
     this.getoption()
+    this.getCity()
   }
 };
 </script>
