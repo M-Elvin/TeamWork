@@ -2,10 +2,14 @@
   <div class="container">
     <!-- 导航栏 -->
     <div>
+<<<<<<< HEAD
       <Carousel :data="dataList" 
        :hoteloption="hoteloption" 
        @setDataList="setDataList"
        />
+=======
+      <!-- <Carousel /> -->
+>>>>>>> parent of 5ab5724... 完成了旅游首页
     </div>
 
     <!-- 筛选栏+展示栏 -->
