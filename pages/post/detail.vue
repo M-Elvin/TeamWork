@@ -45,7 +45,7 @@
                     </div>
                     <div @click="handleDianZan">
                         <i class="icon el-icon-loading"></i>
-                        <p>点赞(1)</p>
+                        <p>点赞({{1}})</p>
                     </div>
                 </el-row>                
              
@@ -130,7 +130,17 @@ export default {
     },
     //点赞
     handleDianZan(){
-        this.$message.success('点赞')
+        this.$axios({
+            url:'/posts/like',
+            method:"GET",
+            params:this.$route.query.id,
+            headers: {
+                    Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+                }
+        }).then(res=>{
+            console.log(res);
+            this.$message.success("点赞成功")
+        })
     }
     }
 }
