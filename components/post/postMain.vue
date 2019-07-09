@@ -16,7 +16,7 @@
             <h4>推荐攻略</h4>
             <button type="button" class="el-button el-button--primary">
                 <i class="el-icon-edit"></i>
-                <span>写游记</span>
+                <span @click='handleTiao'>写游记</span>
             </button>
         </div>
         <!-- 渲染数据 -->
@@ -141,6 +141,9 @@ export default {
         },
         handleSubmit(){
             
+        },
+        handleTiao(){
+            this.$router.push('/post/create')
         },
         
         // 分页切换条数触发
