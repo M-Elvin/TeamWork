@@ -102,8 +102,19 @@
 
             <el-form-item label class="search-form-roomnum">
               <div class="room-right" v-if="RoomisShow">
-                <div>酒店星级</div>
+              <div>
+                  <span>酒店星级</span>
                 <el-rate v-model="star"></el-rate>
+              </div>
+              <div class="right-count">
+                  <span>个人预算</span>
+                      <el-slider
+                        v-model="max_count"
+                        :max="3000"
+                        @change="handleCount">
+                      </el-slider>
+              </div>
+
               </div>
               <div class="time-right" v-if="TimeisShow">
                 <div class="block">
@@ -142,6 +153,8 @@ export default {
   data() {
     return {
       // 轮播图数据
+      max_count:0,
+      value2: 0,
       form: {
         citiesname: "",
         citiesid:{},
@@ -253,9 +266,20 @@ export default {
     })
 
     },
+    handleCount(value){
+      console.log(value);
+      // this.$router.push({
+      //       path:"/hotel",
+      //       query:{
+      //         ...this.$route.query,
+      //         price_lt:+value
+      //       }
+      //     })
+    },
     handleGetoption(){
+    // console.log(this.hoteloption);
     this.optype=this.hoteloption.data.types
-
+    // console.log(this.optype);
     // console.log(this.opbrand);
     // console.log(this.opassets);
     // console.log(this.optype);
@@ -331,7 +355,7 @@ export default {
         height: 200px;
         top: 29px;
         border-radius: 10px;
-        background-color: #fff;
+        background-color: #ddd;
         position: relative;
         .user_msglist {
           height: 100%;
@@ -353,10 +377,22 @@ export default {
         margin: 6px 0;
         .room-right {
           text-align: center;
-          font-size: 26px;
-          line-height: 90px;
+          font-size: 23px;
+          // line-height: 90px;
           width: 150px;
           margin: 0 auto;
+           .right-count{
+              margin: 0 auto;
+              width: 120px;
+            }
+          div{
+            margin-bottom: 36px;
+            &:first-child{
+              border-bottom: 1px solid #ccc;
+              margin: 0 12px;
+            }
+           
+          }
         }
       }
       .time-left {

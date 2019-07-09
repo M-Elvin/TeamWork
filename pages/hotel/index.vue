@@ -2,14 +2,10 @@
   <div class="container">
     <!-- 导航栏 -->
     <div>
-<<<<<<< HEAD
       <Carousel :data="dataList" 
        :hoteloption="hoteloption" 
        @setDataList="setDataList"
        />
-=======
-      <!-- <Carousel /> -->
->>>>>>> parent of 5ab5724... 完成了旅游首页
     </div>
 
     <!-- 筛选栏+展示栏 -->
@@ -21,6 +17,10 @@
        />
     </div>
 
+    <!-- 地图 -->
+    <div >
+        <Map />
+    </div>
     <!-- 页尾 -->
     <div class="foot">
       <div>
@@ -41,6 +41,7 @@
 import Carousel from "@/components/hotel/carousel.vue";
 import List from "@/components/hotel/list.vue";
 import SearchForm from "@/components/hotel/searchForm.vue"
+import Map from "@/components/hotel/hotelmap.vue"
 export default {
   data() {
     return {
@@ -59,7 +60,7 @@ export default {
       cityid:{city:0}
     };
   },
-  components: { Carousel, List },
+  components: { Carousel, List,Map },
   methods: {
     handleShow(){
         this.show=!this.show
@@ -82,7 +83,7 @@ export default {
     // },
 
     setDataList() {
-      console.log(this.$route.query)
+      // console.log(this.$route.query)
         this.$axios({
         url:"/hotels",
         params:{
@@ -141,6 +142,7 @@ export default {
           }
     },
     $route(){
+      console.log(123);
       this.setDataList()
     },
     formpageIndex(){
